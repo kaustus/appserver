@@ -2,6 +2,8 @@
   (:require [clojureql.core :as cql]
             [clojure.contrib.sql :as sql]))
 
+;;; postgersql connection map
+
 (def *db* {:classname "org.postgresql.Driver"
            :subprotocol "postgresql"
            :subname "//127.0.0.1/radel"
