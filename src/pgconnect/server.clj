@@ -53,11 +53,11 @@
         (header)
         (logic/get-sel-region (params "region")))
 
-  (GET "/regnums" [] (logic/get-regnums))
-  (GET "/addresses" [] (logic/get-addresses))
-  (GET "/regions" [] (logic/get-regions))
-  (GET "/brigades" [] (logic/get-brigades))
-  (GET "/contracts" [] (logic/get-contracts))
+  (GET "/s_regnums" [] (logic/get-regnums))
+  (GET "/s_addrs" [] (logic/get-addresses))
+  (GET "/s_regions" [] (logic/get-regions))
+  (GET "/s_brigades" [] (logic/get-brigades))
+  (GET "/s_contracts" [] (logic/get-contracts))
 
   (GET "/s_streets" [] (logic/get-streets))
   (GET "/s_houses" [] (logic/get-houses))
@@ -108,12 +108,12 @@
 		(logic/update-maindata params))
 
   (POST "/update_techdata" {params :params}
-		(println (str ":: to tech update ==>" params))
-		(logic/update-techdata params))
+        	(println (str ":: to tech update ==>" params))
+        	(logic/update-techdata params))
 
   (POST "/update_contractdata" {params :params}
-		(println (str ":: contract update ==>" params))
-		(logic/update-contractdata params))
+        	(println (str ":: contract update ==>" params))
+        	(logic/update-contractdata params))
 
   (POST "/update_brigadedata" {params :params}
 		(println (str ":: brigade update ==>" params))
