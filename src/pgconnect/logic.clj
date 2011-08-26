@@ -5,7 +5,6 @@
   (:require [clojure.string :as str]
             [cheshire.core :as cheshire]
             [clojure.contrib.json :as json]
-            ;[org.danlarkin.json :as json]
             )) 
 
 (defn change-instanse-tostring
