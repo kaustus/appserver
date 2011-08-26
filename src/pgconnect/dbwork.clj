@@ -854,9 +854,8 @@
 			(hash-map :last_exp_date (date-to-sql val)))
 		  (if-let [val (params "next_exp_date")]
 			(hash-map :next_exp_date (date-to-sql val)))
-		  )]
-	  
-  (update-table :liftnew "reg_num" (params "reg_num") exp-map)))
+		  )])
+  (update-table :liftnew "reg_num" (params "reg_num") exp-map))
 
 
 (defn db-insert-newval

@@ -7,6 +7,8 @@
             [clojure.contrib.json :as json]
             )) 
 
+;;; json encode utils ;;;
+
 (defn change-instanse-tostring
   [instance result]
   (first
@@ -24,6 +26,7 @@
                              (if (instance? instance v)
                                (str v)
                                v))) {} result))
+;;;
 
 (defn auth [params]
   (let [name (params "name")
@@ -33,8 +36,8 @@
 	  "OK"
 	  "FAIL")))
 
-(comment (defn make-report
-           []
+(comment
+  (defn make-report []
            (let [datamap (change-instanse-tostring java.sql.Date
                                                    (db-get-liftdata "009"))]
              (save-xls (dataset (map #(name %) (keys datamap)) (vector (map #(if (nil? %) "" %) (vals datamap))))
