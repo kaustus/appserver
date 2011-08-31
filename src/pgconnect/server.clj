@@ -54,7 +54,7 @@
         (logic/get-sel-region (params "region")))
 
   (GET "/s_regnums" [] (logic/get-regnums))
-  (GET "/s_addrs" [] (logic/get-addresses))
+  (GET "/s_addresses" [] (logic/get-addresses))
   (GET "/s_regions" [] (logic/get-regions))
   (GET "/s_brigades" [] (logic/get-brigades))
   (GET "/s_contracts" [] (logic/get-contracts))
@@ -143,5 +143,5 @@
    app
    {:port 8000 :join? false}))
 
-(defn -main [& args]
-  (run-jetty app {:port 8080 :join? false}))
+;; (defn -main [& args]
+;;   (run-jetty app {:port 8080 :join? false}))

@@ -33,7 +33,9 @@
    :liftnew.brigade_id
    :liftnew.inspection
    :liftnew.inspector
-   :liftnew.comment])
+   :liftnew.comment
+   :techspec.date_made
+   :techspec.date_expl])
 
 (def exp-projection
   [:last_exp_num
@@ -68,13 +70,16 @@
       (cql/table *db* :streets)
       (cql/where (= :liftnew.street_id :streets.id_street)))
      (cql/join
+      (cql/table *db* :techspec)
+      (cql/where (= :liftnew.reg_num :techspec.reg_num)))
+     (cql/join
       (cql/table *db* :build_types)
       (cql/where (= :liftnew.building_type :build_types.id_building)))
      (cql/join
       (cql/table *db* :contracts)
       (cql/where (= :liftnew.contract_id :contracts.id_contract)))
 	 (cql/project rn_proection))
-    (cql/where (= :reg_num regnum))))
+    (cql/where (= :liftnew.reg_num regnum))))
 
 (defn db-get-all-regnums
   []
@@ -126,19 +131,31 @@
 
 (defn db-get-like-addrs
   [addr]
-  @(->
-    (cql/join
-     (cql/table *db* :liftnew)
-     (cql/table *db* :streets)
-     (cql/where (= :streets.id_street :liftnew.street_id)))
-    (cql/sort [:streets.street_name])
-    (cql/project [:liftnew.reg_num
-                  :streets.street_name
-                  :liftnew.house
-                  :liftnew.corp
-                  :liftnew.parnum])
-    (cql/select
-     (cql/where (str "streets.street_name LIKE '%" addr "%'")))))
+
+  (let [street (first addr)
+        house (second addr)
+        corp (first (rest (rest addr)))
+        paradnaya (first (rest (rest (rest addr))))]
+    @(->
+      (cql/join
+       (cql/table *db* :liftnew)
+       (cql/table *db* :streets)
+       (cql/where (= :streets.id_street :liftnew.street_id)))
+      (cql/sort [:streets.street_name :liftnew.house :liftnew.corp :liftnew.parnum])
+      (cql/project [:liftnew.reg_num
+                    :streets.street_name
+                    :liftnew.house
+                    :liftnew.corp
+                    :liftnew.parnum])
+      (cql/select
+       (cql/where (str "streets.street_name LIKE '%" street "%'"
+                       (if (not (nil? house))
+                         (str " AND liftnew.house LIKE '%" house "%'"))
+                       (if (not (nil? corp))
+                         (str " AND liftnew.corp LIKE '%" corp "%'"))
+                       (if (not (nil? paradnaya))
+                         (str " AND liftnew.parnum LIKE '%" paradnaya "%'"))
+                       ))))))
   
 (defn db-get-sel-region
   [region]
@@ -707,9 +724,9 @@
 		   (if-let [value (params "link")]
 			 (hash-map :link value))
 		   (if-let [value (params "link_type")]
-			 (hash-map :link_type value))
-		   (if-let [value (params "link_pult")]
 			 (hash-map :link_pult_type value))
+		   (if-let [value (params "link_pult")]
+			 (hash-map :link_pult value))
 		   (if-let [value (params "com_cir")]
 			 (hash-map :comcir value))
 		   (if-let [value (params "circuit")]
@@ -767,7 +784,7 @@
 		   (if-let [value (params "shield")]
 			 (hash-map :safety_shield (if (= "true" value) true false)))
 		   )]
-	  (println (str "....> " liftnew-techmap))
+	  (println (str "===> " liftnew-techmap))
 
 	  (sql/with-connection *db*
 		(sql/transaction
@@ -856,15 +873,15 @@
 			(hash-map :last_exp_date (date-to-sql val)))
 		  (if-let [val (params "next_exp_date")]
 			(hash-map :next_exp_date (date-to-sql val)))
-		  )])
-  (update-table :liftnew "reg_num" (params "reg_num") exp-map))
+		  )]
+    (update-table :liftnew "reg_num" (params "reg_num") exp-map)))
 
 
 (defn db-insert-newval
   [params]
   (if-let [mapdata
 		(merge
-		 (if-let [val (params "street")]
+		 (if (= "s_street" (params "param"))
 		   (hash-map :table :streets :street_name val))
 		 ;(if-let [val (params "holder")]
 		 ;  (hash-map :table :contracts :holder val)

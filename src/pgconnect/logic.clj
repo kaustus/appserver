@@ -108,7 +108,7 @@
 (defn get-sel-addrs
   [addr]
   (json/json-str
-   (into [] (for [ad (db-get-like-addrs addr)]
+   (into [] (for [ad (db-get-like-addrs (vec  (.split addr " ")))]
              ad))))
 
 (defn get-sel-region
