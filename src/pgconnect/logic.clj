@@ -36,13 +36,6 @@
 	  "OK"
 	  "FAIL")))
 
-(comment
-  (defn make-report []
-           (let [datamap (change-instanse-tostring java.sql.Date
-                                                   (db-get-liftdata "009"))]
-             (save-xls (dataset (map #(name %) (keys datamap)) (vector (map #(if (nil? %) "" %) (vals datamap))))
-                       "c:/report.xls"))))
-
 (defn get-regnumdata
   [regnum]
   (let [rn regnum ;(second (str/split regnum #"\$"))
